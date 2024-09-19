@@ -2,7 +2,7 @@ import { test } from '@playwright/experimental-ct-react'
 import { expect } from './fixtures'
 import { ParagraphMeasurementsStory } from './ParagraphMeasurements.story'
 import React from 'react'
-import { ICaretHighlight } from '@/src/content-editable/ParagraphMeasurements'
+import { ICaretHighlight } from '../ParagraphMeasurements'
 
 test('should get inline texts', async ({ mount }) => {
   let inlines: string[] = undefined!
