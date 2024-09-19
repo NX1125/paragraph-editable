@@ -136,6 +136,7 @@ export abstract class AbstractParagraphMeasurements {
       if (length === 0) {
         const isWhitespace = /^\s*$/.test(source.text.data)
         if (!isWhitespace) {
+          console.error('Unexpected empty line', source)
           throw new Error('Unexpected empty line')
         }
 
@@ -530,6 +531,10 @@ export abstract class AbstractParagraphMeasurements {
       })
   }
 
+  // TODO: Create getCaretHighlights which handles the caret position when
+  //  it is at the end of a line and there is no whitespace at it, thus the
+  //  caret is never touching the right side of the last atomic element.
+
   /**
    * Return where the caret should be placed at the given offset.
    *
@@ -548,7 +553,7 @@ export abstract class AbstractParagraphMeasurements {
    */
   getCaretHighlight(offset: number): ICaretHighlight {
     if (offset < 0 || offset > this.length) {
-      throw new Error('Offset is out of the text')
+      throw new Error('Offset is out of the text ' + offset)
     }
 
     if (offset === this.length) {

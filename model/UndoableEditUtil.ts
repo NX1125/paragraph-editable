@@ -126,4 +126,12 @@ export class UndoableEditUtil {
       historyIndex: i,
     }
   }
+
+  static canUndo<S extends IUndoableEditState<S>>(state: S): boolean {
+    return typeof state.historyIndex === 'number' && state.historyIndex > 0
+  }
+
+  static canRedo<S extends IUndoableEditState<S>>(state: S): boolean {
+    return typeof state.historyIndex === 'number' && state.historyIndex + 1 < (state.history || []).length
+  }
 }
