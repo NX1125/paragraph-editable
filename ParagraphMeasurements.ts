@@ -181,7 +181,7 @@ export abstract class AbstractParagraphMeasurements {
   }
 
   get length() {
-    return this.fragments[this.fragments.length - 1].end
+    return this.fragments[this.fragments.length - 1]?.end || 0
   }
 
   /**
@@ -554,6 +554,17 @@ export abstract class AbstractParagraphMeasurements {
   getCaretHighlight(offset: number): ICaretHighlight {
     if (offset < 0 || offset > this.length) {
       throw new Error('Offset is out of the text ' + offset)
+    }
+
+    if (!this.length) {
+      const bounds = this.root.getBoundingClientRect()
+      return {
+        offset: 0,
+        x: bounds.left,
+        top: bounds.top,
+        bottom: bounds.bottom,
+        source: this.root,
+      }
     }
 
     if (offset === this.length) {
