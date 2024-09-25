@@ -9,6 +9,14 @@ export interface IInlineFragment {
   source: Element | TextNodeMeasurements
 }
 
+/**
+ * Represents a node in the paragraph. This is used to create the selection from the DOM Selection.
+ */
+export interface INodeFragment {
+  offset: number
+  node: Node
+}
+
 export interface ILineFragmentRange {
   start: number
   end: number
@@ -49,10 +57,14 @@ export abstract class AbstractParagraphMeasurements {
   public readonly inlines: IInlineFragment[]
   public readonly fragments: ILineFragment[]
 
+  public readonly nodes: INodeFragment[]
+
   constructor(
     public readonly root: Element,
   ) {
     this.inlines = []
+    this.nodes = []
+
     this.parseInlinesRecursively(this.inlines, root, 0)
 
     let previous: ILineFragment | undefined = undefined
@@ -95,6 +107,11 @@ export abstract class AbstractParagraphMeasurements {
     const childNodes = Array.from(element.childNodes)
 
     for (const node of childNodes) {
+      this.nodes.push({
+        offset,
+        node,
+      })
+
       if (node instanceof Text) {
         const data = node.data
         inlines.push({
@@ -614,6 +631,25 @@ export abstract class AbstractParagraphMeasurements {
       x: bounds[boundProperty],
       source: node.source,
     }
+  }
+
+  /**
+   * Return the offset of the given node. If the node is not found, then an
+   * error is thrown.
+   *
+   * @param node
+   */
+  getNodeOffset(node: Node): number {
+    if (node === this.root) {
+      return 0
+    }
+
+    const index = this.nodes.findIndex(x => x.node === node)
+    if (index === -1) {
+      throw new Error('Node not found')
+    }
+
+    return this.nodes[index].offset
   }
 }
 
