@@ -102,7 +102,11 @@ export abstract class AbstractParagraphMeasurements {
    */
   abstract isNotInline(element: Element): boolean
 
-  private parseInlinesRecursively(inlines: IInlineFragment[], element: Element, offset: number) {
+  private parseInlinesRecursively(inlines: IInlineFragment[], element: Element | null | undefined, offset: number) {
+    if (element === null || element === undefined) {
+      return offset
+    }
+
     // store into an array since childNodes is a live collection
     const childNodes = Array.from(element.childNodes)
 
